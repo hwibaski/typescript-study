@@ -250,6 +250,114 @@ maker.coffeeBeans = -34; // invalid (6)
 
 <br>
 
+### 5. Getter & Setter
+
+- getter와 setter는 멤버 변수처럼 사용이 가능하다.
+- 멤버 변수의 값을 변경하거나 설정할 때 조금 더 유연하게 사용이 가능하다.
+- 유연하게 사용함과 동시에 프로퍼티 값을 원하는 대로 통제할 수 있다.
+- 유저의 firstName과 lastName을 받아서 fullName을 만들어주는 User라는 클래스가 있다.
+
+```tsx
+class User {
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  constructor(firstName: string, lastName: string) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.fullName = `${firstName} ${lastName}`;
+  }
+}
+const user = new User('Steve', 'Jobs');
+console.log(user.fullName); // Steve Jobs
+// 우리는 firstName을 다른 이름으로 바꾸고 싶다.
+user.firstName = 'Hwimin';
+// 하지만, 결과는 처음에 constructor에 넣은 'Steve Jobs'가 출력된다.
+// constructor에 최초에 지정된 값이 그대로 출력되고 있다.
+console.log(user.fullName); // Steve Jobs
+```
+
+#### 5-1. Getter의 등장
+
+- Getter는 멤버 변수의 값을 받아서 새로운 값을 출력할 때 유용한다.
+
+```tsx
+class User {
+  firstName: string;
+  lastName: string;
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+  constructor(firstName: string, lastName: string) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+}
+const user = new User('Steve', 'Jobs');
+console.log(user.fullName); // Steve Jobs
+user.firstName = 'Hwimin';
+console.log(user.fullName); // Hwimin Jobs
+```
+
+#### 5-2. 멤버 변수를 private으로 만들면서 코드량 줄이기
+
+- code 1과 code2는 결과 값이 같다. 멤버 변수를 생성자 함수에서 받을 필요 없다.
+- 단, code2의 private과 같은 접근지정자를 붙여줘야한다. (public도 가능)
+
+---
+
+- code 1
+
+```tsx
+class User {
+  private firstName: string;
+  private lastName: string;
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+  constructor(firstName: string, lastName: string) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+}
+```
+
+- code2
+
+```tsx
+class User {
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+  constructor(private firstName: string, private lastName: string) {}
+}
+```
+
+### 5-3. set을 이용해서 안전성 높히기
+
+```tsx
+class User {
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+  private internalAge = 4;
+  get age(): number {
+    return this.internalAge;
+  }
+  set age(num: number) {
+    if (num < 0) {
+      throw new Error('age should be greater than 0');
+    }
+    this.internalAge = num;
+  }
+  constructor(private firstName: string, private lastName: string) {}
+}
+const user = new User('Steve', 'Jobs');
+user.age = 6;
+// user.age에 값을 할당할 시 setter 함수에서 포함하고 있는 로직이 실행된다.
+// 만약 user.age에 0보다 작은 값을 할당하면 'age should be greater than 0' 이라는 에러가 던져진다.
+```
+
 ## reference
 
 https://mong-blog.tistory.com/entry/%ED%81%B4%EB%9E%98%EC%8A%A4class%EB%8A%94-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80
