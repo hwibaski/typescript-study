@@ -358,6 +358,92 @@ user.age = 6;
 // 만약 user.age에 0보다 작은 값을 할당하면 'age should be greater than 0' 이라는 에러가 던져진다.
 ```
 
+## 6. Interface를 이용해 추상화의
+
+- 추상화라는것은, 어떤 실체로부터 공통적인 부분이나 관심 있는 특성들만 한곳에 모은것을 의미한다. 예를들어서, 지구를 본따 만든 지구본을 예로 들 수 있다. 지구본은 실제 지구로 부터 관심 있는 특성들(대륙의 위치, 위도,경도)만 뽑아서 만든것이다. 지구를 추상화해서 지구본을 만들었다.
+
+- 객체지향에서의 추상화는 어떤 하위클래스들에 존재하는 공통적인 메소드를 인터페이스로 정의하는것을 예로 들 수 있다.
+
+출처: https://simsimjae.tistory.com/293 [104%]
+
+- 아래의 클래스에서 makeCoffee 함수는 내부적으로 여러 함수를 호출한다.
+- 그러기 위해서 우리는 클래스 내부의 여러가지 메서드를 만들었다. 하지만 사용자는 makeCoffee만 사용하면 되고, 그 내부에 포함하고 있는 grindBeans(), preHeat(), extract()는 존재조차 모르게 하고 싶다면 어떻게 해야할까?
+- 일단, 접근 지정자인 private을 사용해서 위의 메서드를 private으로 지정할 수 있다.
+- 또한, interface를 이용해서 내가 지정한 메서드에만 접근가능하게 만들어줄 수도 있다.
+
+## 6. Interface 사용법
+
+- interface CoffeeMake를 만든다. (1)
+- 클래스가 해당 interface를 수행한다는 의미의 implements와 원하는 interface를 입력한다. (2)
+- 테스트용으로 하나의 인스턴스는 타입을 CoffeeMachine으로 주고, 나머지 하나는 interface인 CoffeeMaker로 준다. (3), (4)
+- CoffeeMachine은 해당 클래스가 가지고 있는 모든 메서드에 접근이 가능하지만, interface를 사용한 maker2는 오직 makeCoffee 메소드에만 접근이 가능하다.
+
+```tsx
+type CoffeeCup = {
+  shots: number;
+  hasMilk: boolean;
+};
+
+interface CoffeeMaker {
+  makeCoffee(shots: number): CoffeeCup; // (1)
+}
+
+class CoffeeMachine implements CoffeeMaker {
+  // (2)
+  private static BEANS_GRAMM_PER_SHOT: number = 7;
+  private coffeeBeans: number = 0;
+
+  constructor(coffeeBeans: number) {
+    this.coffeeBeans = coffeeBeans;
+  }
+
+  static makeMachine(coffeeBeans: number): CoffeeMachine {
+    return new CoffeeMachine(coffeeBeans);
+  }
+
+  fillCoffeeBeans(beans: number) {
+    if (beans < 0) {
+      throw new Error('value for beans should be greater than 0');
+    }
+    this.coffeeBeans += beans;
+  }
+
+  grindBeans(shots) {
+    console.log(`grinding beans for ${shots}`);
+    if (this.coffeeBeans < shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT) {
+      throw new Error('Not enough coffee beans!');
+    }
+    this.coffeeBeans -= shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT;
+  }
+
+  preheat(): void {
+    console.log('heating up...');
+  }
+
+  extract(shots: number): CoffeeCup {
+    console.log(`Pulling ${shots} shots...`);
+    return {
+      shots,
+      hasMilk: false,
+    };
+  }
+
+  makeCoffee(shots: number): CoffeeCup {
+    this.grindBeans(shots);
+    this.preheat();
+    return this.extract(shots);
+  }
+}
+
+const maker: CoffeeMachine = new CoffeeMachine(32); // (3)
+maker.fillCoffeeBeans(10);
+maker.makeCoffee(2);
+
+const maker2: CoffeeMaker = new CoffeeMachine(32); // (4)
+maker2.fillCoffeeBenas(32);
+maker2.makeCoffee(2);
+```
+
 ## reference
 
 https://mong-blog.tistory.com/entry/%ED%81%B4%EB%9E%98%EC%8A%A4class%EB%8A%94-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80
