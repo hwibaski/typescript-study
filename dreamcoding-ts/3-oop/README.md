@@ -371,7 +371,7 @@ user.age = 6;
 - 일단, 접근 지정자인 private을 사용해서 위의 메서드를 private으로 지정할 수 있다.
 - 또한, interface를 이용해서 내가 지정한 메서드에만 접근가능하게 만들어줄 수도 있다.
 
-## 6. Interface 사용법
+### 6-1. Interface 사용법
 
 - interface CoffeeMake를 만든다. (1)
 - 클래스가 해당 interface를 수행한다는 의미의 implements와 원하는 interface를 입력한다. (2)
