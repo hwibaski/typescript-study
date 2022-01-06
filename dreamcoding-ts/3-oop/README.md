@@ -377,6 +377,7 @@ user.age = 6;
 - 클래스가 해당 interface를 수행한다는 의미의 implements와 원하는 interface를 입력한다. (2)
 - 테스트용으로 하나의 인스턴스는 타입을 CoffeeMachine으로 주고, 나머지 하나는 interface인 CoffeeMaker로 준다. (3), (4)
 - CoffeeMachine은 해당 클래스가 가지고 있는 모든 메서드에 접근이 가능하지만, interface를 사용한 maker2는 오직 makeCoffee 메소드에만 접근이 가능하다.
+  ![](https://images.velog.io/images/gnlals1/post/abb520ee-f4eb-49c4-9ba1-f8ac9464b0b2/image.png)
 
 ```tsx
 type CoffeeCup = {
